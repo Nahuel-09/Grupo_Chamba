@@ -63,10 +63,3 @@ Matriz detallada para la auditoría del proyecto que asocia la fuerza de trabajo
 * **Base de Datos:** Motor Relacional (PostgreSQL / MySQL)
 
 ---
-
-### 💡 Instrucciones para usarlo en tu Git:
-
-1. Copiá todo el bloque de texto de arriba.
-2. En la raíz de tu proyecto local, creá o editá el archivo llamado `README.md`.
-3. Pegá el contenido y guardalo.
-4. Hacé el `git add README.md`, `git commit -m "docs: actualizar readme con roles y estructura del informe"` y subilo con `git push`. ¡Queda listo y súper pro para cuando entren a revisar tu repositorio!
