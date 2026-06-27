@@ -1,0 +1,48 @@
+<div xmlns:th="http://www.thymeleaf.org"
+     th:fragment="tablaDetalle(detalles)">
+
+    <div class="card">
+        <div class="card-header">
+            Detalle de productos cargados
+        </div>
+
+        <div class="card-body">
+
+            <div class="alert alert-info" th:if="${#lists.isEmpty(detalles)}">
+                Todavía no se agregaron productos al detalle.
+            </div>
+
+            <table class="table table-bordered table-striped"
+                   th:if="${!#lists.isEmpty(detalles)}">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Subtotal</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr th:each="detalle, iter : ${detalles}">
+                        <td th:text="${detalle.producto.nombre}"></td>
+                        <td th:text="${detalle.cantidad}"></td>
+                        <td th:text="${detalle.precio}"></td>
+                        <td th:text="${detalle.subtotal}"></td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-danger"
+                               th:href="@{/notas/detalle/eliminar/{index}(index=${iter.index})}">
+                                Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Nota de Envío</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body th:replace="~{fragments/layout :: estructura_pagina(~{:: #ver_notas})}">
+
+    <div id="ver_notas">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h3 th:text="${title}">Detalle de la Nota</h3>
+                <p class="text-muted small mb-0">Visor de auditoría, control de estados y carga de ítems de stock.</p>
+            </div>
+            <span class="badge bg-secondary px-3 py-2 fs-6" th:text="${nota.estadoTexto}">Estado</span>
+        </div>
+        <hr>
+
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-light fw-bold text-secondary">
+                Información General
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3"><strong>ID Registro:</strong> <span class="d-block text-muted" th:text="${nota.id}"></span></div>
+                    <div class="col-md-3"><strong>Fecha Emisión:</strong> <span class="d-block text-muted" th:text="${nota.fecha}"></span></div>
+                    <div class="col-md-3"><strong>Nro. Comprobante:</strong> <span class="d-block text-muted" th:text="${nota.nro ?: 'S/N'}"></span></div>
+                    <div class="col-md-3"><strong>Proveedor / Remitente:</strong> <span class="d-block text-muted" th:text="${nota.proveedor}"></span></div>
+                </div>
+                <hr class="my-2">
+                <div class="row g-3">
+                    <div class="col-md-3"><strong>Verificado Logical:</strong> <span class="badge" th:classappend="${nota.verificado == 1} ? 'bg-success' : 'bg-warning'" th:text="${nota.verificado == 1 ? 'SÍ' : 'NO'}"></span></div>
+                    <div class="col-md-3"><strong>Procesado / Inventariado:</strong> <span class="badge" th:classappend="${nota.procesado == 1} ? 'bg-success' : 'bg-secondary'" th:text="${nota.procesado == 1 ? 'SÍ' : 'NO'}"></span></div>
+                    <div class="col-md-6"><strong>Observación:</strong> <span class="d-block text-muted small" th:text="${nota.observacion ?: 'Sin observaciones registradas.'}"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3 p-3 bg-light border rounded d-flex flex-wrap gap-2 align-items-center">
+            
+            <div th:if="${nota.verificado == 0 and nota.procesado == 0}" class="d-flex gap-2">
+                <a class="btn btn-warning" th:href="@{/notas/editar/{id}(id=${nota.id})}">
+                    Editar Cabecera
+                </a>
+
+                <a class="btn btn-danger" th:href="@{/notas/eliminar/{id}(id=${nota.id})}">
+                    Eliminar Nota
+                </a>
+
+                <form th:action="@{/notas/verificar/{id}(id=${nota.id})}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-success">
+                        Verificar Nota
+                    </button>
+                </form>
+            </div>
+
+            <div th:if="${nota.verificado == 1 and nota.procesado == 0}" class="d-flex gap-2">
+                <form th:action="@{/notas/desverificar/{id}(id=${nota.id})}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-outline-warning">
+                        Revertir a Nueva (Borrador)
+                    </button>
+                </form>
+
+                <form th:action="@{/notas/procesar/{id}(id=${nota.id})}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-success">
+                        Procesar e Impactar Stock
+                    </button>
+                </form>
+            </div>
+
+            <div th:if="${nota.verificado == 1 and nota.procesado == 1}">
+                <div class="alert alert-success m-0 py-2 px-3 small d-flex align-items-center gap-2">
+                    <strong>Nota Procesada Exitosamente:</strong> Los productos ya impactaron en el stock general y el documento está cerrado.
+                </div>
+            </div>
+
+            <div th:if="${nota.verificado == 0 and nota.procesado == 1}">
+                <div class="alert alert-danger m-0 py-2 px-3 small fw-bold">
+                    Error: Estado inconsistente detectado en la base de datos.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card shadow-sm mb-3" th:if="${nota.editable}">
+            <div class="card-header bg-light fw-bold text-success">
+                Agregar Producto a Nota Guardada
+            </div>
+            <div class="card-body">
+                <form th:action="@{/notas/detalle/agregar-guardado/{id}(id=${nota.id})}" method="post">
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label fw-bold">Producto *</label>
+                            <select name="productoId" class="form-select" required>
+                                <option value="">Seleccione un producto...</option>
+                                <option th:each="producto : ${productos}"
+                                        th:value="${producto.id}"
+                                        th:text="${producto.nombre}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Cantidad *</label>
+                            <input type="number" name="cantidad" class="form-control" min="1" required placeholder="0">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Precio Unitario *</label>
+                            <input type="number" name="precio" class="form-control" step="0.01" min="1" required placeholder="0.00">
+                        </div>
+
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button class="btn btn-success w-200 fw-bold" type="submit">Enviar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-light fw-bold text-secondary">
+                🔎 Desglose del Detalle de Carga
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover border-0 m-0 align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="ps-3">Producto</th>
+                                <th style="width: 15%; text-align: center;">Cantidad</th>
+                                <th style="width: 15%; text-align: right;">Precio Unitario</th>
+                                <th style="width: 15%; text-align: right;">Subtotal</th>
+                                <th th:if="${nota.editable}" style="width: 15%; text-align: center;">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="detalle : ${nota.detalles}">
+                                <td th:text="${detalle.producto.nombre}" class="ps-3"></td>
+                                <td th:text="${detalle.cantidad}" class="text-center"></td>
+                                <td th:text="${#numbers.formatDecimal(detalle.precio, 1, 2)}" class="text-end"></td>
+                                <td th:text="${#numbers.formatDecimal(detalle.subtotal, 1, 2)}" class="text-end fw-bold text-dark"></td>
+                                <td th:if="${nota.editable}" class="text-center">
+                                    <a class="btn btn-sm btn-outline-danger"
+                                       th:href="@{/notas/detalle/eliminar-guardado/{notaId}/{detalleId}(notaId=${nota.id}, detalleId=${detalle.id})}">
+                                        Quitar
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(nota.detalles)}">
+                                <td colspan="5" class="text-center text-muted py-3">No existen ítems cargados en esta nota de envío.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2 pt-2 border-top">
+            <a class="btn btn-outline-secondary" th:href="@{/notas}">
+                Volver al Listado
+            </a>
+            <a th:href="@{/}" class="btn btn-outline-secondary ms-auto">
+                Menú Principal
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

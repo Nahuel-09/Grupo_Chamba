@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_sz53
+    restart: always
+    environment:
+      POSTGRES_USER: nahuel
+      POSTGRES_PASSWORD: peosb123
+      POSTGRES_DB: prueba
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # REQUISITO PUNTO 11.3: Inyección desde la carpeta exacta solicitada
+      - ./docker/db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nahuel -d prueba"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: spring_app_sz53
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/prueba
+      - SPRING_DATASOURCE_USERNAME=nahuel
+      - SPRING_DATASOURCE_PASSWORD=peosb123
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=none
+      - SPRING_JPA_SHOW_SQL=true
+    depends_on:
+      db:
+        condition: service_healthy
+
+# Los volúmenes nombrados globales solo declaran el espacio de persistencia física de Postgres, sin rutas locales.
+volumes:
+  postgres_data:

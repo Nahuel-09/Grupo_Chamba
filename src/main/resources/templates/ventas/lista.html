@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Ventas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body th:replace="~{fragments/layout :: estructura_pagina(~{:: #seccion_ventas})}">
+
+    <div id="seccion_ventas" sec:authorize="hasAnyRole('ADMIN', 'VENDEDOR')">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <h3 th:text="${title}">Historial de Ventas</h3>
+                <p class="text-muted small mb-0">Registro general de operaciones comerciales y estados de facturación.</p>
+            </div>
+            <a class="btn btn-primary px-3" th:href="@{/ventas/nueva}">
+                Nueva Venta
+            </a>
+        </div>
+        <hr>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-hover border align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 8%;">ID</th>
+                        <th>Fecha</th>
+                        <th>Cliente / Razón Social</th>
+                        <th style="text-align: right; width: 15%;">Monto Total</th>
+                        <th style="text-align: center; width: 12%;">Estado</th>
+                        <th style="width: 24%; text-align: center;">Acciones Operativas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="venta : ${ventas}">
+                        <td th:text="${venta.id}" class="fw-bold text-secondary"></td>
+                        <td th:text="${venta.fecha}"></td>
+                        <td th:text="${venta.cliente.nombre}"></td>
+                        <td th:text="${venta.totalVenta}" class="text-end fw-bold text-dark"></td>
+                        <td class="text-center">
+                            <span th:if="${venta.procesado == 0}" class="badge bg-warning text-dark">Nueva</span>
+                            <span th:if="${venta.procesado == 1}" class="badge bg-success">Procesada</span>
+                        </td>
+                        <td>
+                            <div class="d-flex justify-content-center gap-1">
+                                <a class="btn btn-sm btn-outline-info" th:href="@{/ventas/ver/{id}(id=${venta.id})}">
+                                    Ver
+                                </a>
+                                
+                                <form th:if="${venta.procesado == 0}" 
+                                    th:action="@{/ventas/procesar/{id}(id=${venta.id})}" 
+                                    method="post" 
+                                    style="display: inline;">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        Procesar
+                                    </button>
+                                </form>
+                                
+                                <a th:if="${venta.procesado == 1}" 
+                                th:href="@{/ventas/factura/{id}(id=${venta.id})}" 
+                                class="btn btn-sm btn-outline-primary">
+                                    Factura
+                                </a>
+
+                                <a class="btn btn-sm btn-danger"
+                                   th:if="${venta.procesado == 0}"
+                                   th:href="@{/ventas/eliminar/{id}(id=${venta.id})}">
+                                    Borrar
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(ventas)}">
+                        <td colspan="6" class="text-center text-muted py-3">No existen registros de ventas en el sistema.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-3 pt-3 border-top">
+            <a th:href="@{/}" class="btn btn-outline-secondary">
+                Volver al Menú Principal
+            </a>
+        </div>
+    </div>
+
+    <div sec:authorize="!hasAnyRole('ADMIN', 'VENDEDOR')" class="alert alert-danger my-4">
+        <strong>Acceso Restringido:</strong> Su cuenta no posee los privilegios requeridos para gestionar el historial de ventas.
+    </div>
+
+</body>
+</html>

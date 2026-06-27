@@ -1,0 +1,52 @@
+<div th:fragment="sidebar_navegacion" class="d-flex flex-column gap-2 p-3 bg-white border rounded">
+    <h5 class="text-muted small text-uppercase px-2 mb-3">Navegación</h5>
+
+    <div sec:authorize="hasAnyRole('ADMIN','STOCK', 'VENDEDOR')">
+        <a class="btn btn-outline-danger w-100 text-start" th:href="@{/}">
+            Inicio
+        </a>
+    </div>
+
+    <div sec:authorize="hasAnyRole('ADMIN','STOCK')">
+        <a class="btn btn-outline-danger w-100 text-start" th:href="@{/categorias/}">
+            Categorías
+        </a>
+    </div>
+
+    <div sec:authorize="hasAnyRole('ADMIN','STOCK')">
+        <a class="btn btn-outline-primary w-100 text-start" th:href="@{/productos/}">
+            Productos
+        </a>
+    </div>
+
+    <div sec:authorize="hasAnyRole('ADMIN','VENDEDOR')">
+        <a class="btn btn-outline-primary w-100 text-start" th:href="@{/clientes}">
+            Clientes
+        </a>
+    </div>
+
+    <div sec:authorize="hasAnyRole('ADMIN','STOCK')">
+        <a class="btn btn-outline-success w-100 text-start" th:href="@{/notas}">
+            Notas de Envío
+        </a>
+    </div>
+
+    <div sec:authorize="hasAnyRole('ADMIN','VENDEDOR')">
+        <a class="btn btn-outline-success w-100 text-start" th:href="@{/ventas}">
+            Ventas
+        </a>
+    </div>
+
+    <div sec:authorize="hasRole('ADMIN')">
+        <a class="btn btn-outline-dark w-100 text-start" th:href="@{/usuarios}">
+            Usuarios
+        </a>
+    </div>
+
+    
+    <div sec:authorize="hasAnyRole('ADMIN','STOCK', 'VENDEDOR')">
+        <a class="btn btn-outline-dark w-100 text-start" th:href="@{/reportes/resumen-mensual}">
+            Resumen Mensual
+        </a>
+    </div>
+</div>

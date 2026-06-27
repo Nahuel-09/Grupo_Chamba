@@ -1,0 +1,22 @@
+<div th:fragment="navbar_comun"
+    class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light border-bottom">
+    <div>
+        <h2 class="h4 mb-1">Sistema de Gestión de Inventario</h2>
+        <p class="text-muted small mb-0">
+            Menú principal de la aplicación
+        </p>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <div class="text-end">
+            <span class="d-block fw-bold text-dark" sec:authentication="name">Usuario</span>
+            <span class="badge bg-primary" sec:authentication="principal.authorities">ROL</span>
+        </div>
+
+        <form th:action="@{/logout}" method="post" class="m-0">
+            <button class="btn btn-outline-danger btn-sm" type="submit">
+                Cerrar sesión
+            </button>
+        </form>
+    </div>
+</div>
