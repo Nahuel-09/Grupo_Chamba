@@ -28,7 +28,7 @@ El desarrollo y la documentación del sistema se estructuraron bajo una estricta
 
 El proyecto cuenta con dos secciones fundamentales de control y defensa técnica integradas en los entregables:
 
-### 11.4. Informe Individual Paso a Paso
+### 2. Informe Individual Paso a Paso
 
 Cada integrante del equipo dispone de un apartado detallado en la documentación que explica de forma exhaustiva los siguientes puntos de su intervención en el proyecto:
 
@@ -43,7 +43,7 @@ Cada integrante del equipo dispone de un apartado detallado en la documentación
 * **Gestión de Riesgos:** Qué dificultades técnicas aparecieron durante el proceso y las estrategias empleadas para resolverlas.
 * **Evaluación de Impacto:** Qué aportes de valor específicos realizó el estudiante al ecosistema del proyecto.
 
-### 11.5. Planilla de División de Tareas
+### 3. Planilla de División de Tareas
 
 Matriz detallada para la auditoría del proyecto que asocia la fuerza de trabajo con los objetivos del software:
 
