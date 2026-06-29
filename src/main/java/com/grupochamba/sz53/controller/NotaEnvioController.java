@@ -234,8 +234,8 @@ public class NotaEnvioController {
 
         return "redirect:/notas/ver/" + notaId;
     }
-
-    @PostMapping("/eliminar/{id}") 
+    
+    @GetMapping("/eliminar/{id}") 
     public String eliminarNota(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             notaEnvioService.eliminarNota(id);

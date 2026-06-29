@@ -11,79 +11,90 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
                 <h3 class="fw-bold text-dark" th:text="${title}">Notas de Envío</h3>
-                <p class="text-muted small mb-0">Historial y registro de ingresos de mercadería al inventario.</p>
+                <p class="text-muted small mb-0">Historial de auditoría y registro de ingresos de insumos farmacéuticos al inventario.</p>
             </div>
-            <a sec:authorize="hasAnyRole('ADMIN', 'STOCK')" class="btn btn-success d-flex align-items-center gap-2 px-3" th:href="@{/notas/nueva}">
+            <a sec:authorize="hasAnyRole('ADMIN', 'STOCK')" class="btn btn-success d-inline-flex align-items-center gap-2 px-3 shadow-sm rounded-2" th:href="@{/notas/nueva}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
-                <span>Nueva Nota</span>
+                <span class="fw-medium">Nueva Nota</span>
             </a>
         </div>
         <hr>
 
-        <div class="table-responsive">
-            <table class="table table-hover align-middle border mb-0">
-                <thead class="table-light text-secondary font-monospace small">
-                    <tr>
-                        <th class="py-3" style="width: 8%;">ID</th>
-                        <th class="py-3">Fecha</th>
-                        <th class="py-3">Proveedor / Distribuidor</th>
-                        <th class="py-3" style="width: 15%;">Estado</th>
-                        <th class="py-3 text-center" style="width: 10%;">Items</th>
-                        <th sec:authorize="hasAnyRole('ADMIN', 'STOCK')" class="text-center py-3" style="width: 15%;">Operaciones</th>
-                    </tr>
-                </thead>
+        <div class="card border shadow-sm rounded-3 bg-white mb-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 border-0">
+                    <thead class="table-light text-secondary font-monospace small border-bottom">
+                        <tr>
+                            <th class="py-3 ps-3" style="width: 8%;">ID</th>
+                            <th class="py-3" style="width: 15%;">Fecha</th>
+                            <th class="py-3">Proveedor / Distribuidor</th>
+                            <th class="py-3" style="width: 15%;">Estado Operativo</th>
+                            <th class="py-3 text-center" style="width: 12%;">Ítems</th>
+                            <th class="text-center py-3 pe-3" style="width: 15%;">Operaciones</th>
+                        </tr>
+                    </thead>
 
-                <tbody class="text-dark">
-                    <tr th:each="nota : ${notas}">
-                        <td th:text="${nota.id}" class="fw-bold text-secondary"></td>
-                        <td th:text="${nota.fecha}" class="font-monospace small"></td>
-                        <td th:text="${nota.proveedor}" class="fw-medium"></td>
-                        <td>
-                            <span class="badge px-2.5 py-1.5 text-uppercase" 
-                                  th:text="${nota.estadoTexto}"
-                                  th:classappend="${#strings.contains(#strings.toLowerCase(nota.estadoTexto), 'pend')} ? 'bg-warning text-dark' : 'bg-success'"
-                                  style="font-size: 0.75rem; letter-spacing: 0.025em;">
-                                  Estado
-                            </span>
-                        </td>
-                        <td th:text="${#lists.size(nota.detalles)}" class="text-center font-monospace fw-bold text-secondary">0</td>
-                        
-                        <td>
-                            <div class="d-flex justify-content-center gap-2">
-                                <a class="btn btn-sm btn-outline-info d-inline-flex align-items-center p-2" 
-                                   th:href="@{/notas/ver/{id}(id=${nota.id})}" 
-                                   title="Ver Detalle de la Nota"
-                                   style="color: #0284c7 !important; border-color: #38bdf8 !important;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </a>
+                    <tbody class="text-dark">
+                        <tr th:each="nota : ${notas}">
+                            <td th:text="${nota.id}" class="ps-3 font-monospace fw-bold text-secondary"></td>
+                            
+                            <td th:text="${#temporals.format(nota.fecha, 'dd/MM/yyyy') ?: nota.fecha}" class="font-monospace small text-secondary"></td>
+                            
+                            <td th:text="${nota.proveedor}" class="fw-medium text-dark"></td>
+                            
+                            <td>
+                                <span th:if="${nota.verificado == 0 && nota.procesado == 0}" 
+                                      class="badge bg-warning-subtle text-warning border border-warning-subtle px-2.5 py-1.5 rounded-2 small text-uppercase fw-bold">
+                                    Borrador
+                                </span>
+                                <span th:if="${nota.verificado == 1 && nota.procesado == 0}" 
+                                      class="badge bg-info-subtle text-info border border-info-subtle px-2.5 py-1.5 rounded-2 small text-uppercase fw-bold">
+                                    Verificado
+                                </span>
+                                <span th:if="${nota.verificado == 1 && nota.procesado == 1}" 
+                                      class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1.5 rounded-2 small text-uppercase fw-bold">
+                                    Procesado
+                                </span>
+                            </td>
+                            
+                            <td th:text="${#lists.size(nota.detalles)}" class="text-center font-monospace fw-bold text-secondary">0</td>
+                            
+                            <td class="text-center pe-3">
+                                <div class="d-flex justify-content-center gap-1.5">
+                                    <a class="btn btn-sm btn-outline-primary d-inline-flex align-items-center p-2 rounded-2" 
+                                       th:href="@{/notas/ver/{id}(id=${nota.id})}" 
+                                       title="Ver Auditoría Analítica">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </a>
 
-                                <a class="btn btn-sm btn-outline-danger d-inline-flex align-items-center p-2"
-                                   sec:authorize="hasAnyRole('ADMIN', 'STOCK')"
-                                   th:if="${nota.editable}"
-                                   th:href="@{/notas/eliminar/{id}(id=${nota.id})}"
-                                   title="Eliminar Nota de Envío">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1a3 3 0 003 3h4m-6-3a3 3 0 01-3-3V3a3 3 0 013-3h4a3 3 0 013 3v1" />
-                                    </svg>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(notas)}">
-                        <td colspan="6" class="text-center text-muted py-4 small">
-                            No hay notas de envío registradas en el sistema.
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                                    <a class="btn btn-sm btn-outline-danger d-inline-flex align-items-center p-2 rounded-2"
+                                       sec:authorize="hasAnyRole('ADMIN', 'STOCK')"
+                                       th:if="${nota.verificado == 0 && nota.procesado == 0}"
+                                       th:href="@{/notas/eliminar/{id}(id=${nota.id})}"
+                                       title="Eliminar Nota de Envío Permanentemente">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1a3 3 0 003 3h4m-6-3a3 3 0 01-3-3V3a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(notas)}">
+                            <td colspan="6" class="text-center text-muted py-4 small">
+                                No se registran movimientos ni notas de envío en este período operativo.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="mt-4 pt-3 border-top">
+        <div class="pt-3">
             <a th:href="@{/}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

@@ -46,9 +46,20 @@
                         <strong class="small text-secondary text-uppercase d-block mb-1">Procesado / Inventariado</strong> 
                         <span class="badge px-2 py-1.5 font-monospace" th:classappend="${nota.procesado == 1} ? 'bg-success' : 'bg-secondary'" th:text="${nota.procesado == 1 ? 'SÍ' : 'NO'}"></span>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <strong class="small text-secondary text-uppercase d-block mb-1">Observación Interna</strong> 
                         <span class="text-muted small d-block lh-sm" th:text="${nota.observacion ?: 'Sin observaciones registradas.'}"></span>
+                    </div>
+
+                    <div class="col-md-3">
+                        <strong class="small text-secondary text-uppercase d-block mb-1">Imprimir Factura</strong> 
+                        <button onclick="window.print();" 
+                                class="btn btn-sm btn-outline-primary d-inline-flex align-items-center p-2 rounded-2 no-print"
+                                title="Imprimir registro de este ítem">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h14z" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>

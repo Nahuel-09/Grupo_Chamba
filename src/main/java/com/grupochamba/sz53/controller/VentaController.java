@@ -200,7 +200,7 @@ public class VentaController {
     }
 
     
-    @PostMapping("/eliminar/{id}")
+    @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Venta venta = ventaService.buscarPorId(id);
         
