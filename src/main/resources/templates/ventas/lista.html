@@ -7,85 +7,144 @@
 </head>
 <body th:replace="~{fragments/layout :: estructura_pagina(~{:: #seccion_ventas})}">
 
+    <!-- SECCIÓN CONTENEDORA PRINCIPAL (ADMIN o VENDEDOR) -->
     <div id="seccion_ventas" sec:authorize="hasAnyRole('ADMIN', 'VENDEDOR')">
+        <!-- Encabezado Operativo -->
         <div class="d-flex justify-content-between align-items-center mb-3">
             <div>
-                <h3 th:text="${title}">Historial de Ventas</h3>
-                <p class="text-muted small mb-0">Registro general de operaciones comerciales y estados de facturación.</p>
+                <h3 class="fw-bold text-dark" th:text="${title}">Historial de Ventas</h3>
+                <p class="text-muted small mb-0">Registro general de operaciones comerciales, estados de flujo de caja y facturación consolidada.</p>
             </div>
-            <a class="btn btn-primary px-3" th:href="@{/ventas/nueva}">
-                Nueva Venta
+            <!-- Botón de Inserción Directa -->
+            <a class="btn btn-success d-inline-flex align-items-center gap-2 px-3 shadow-sm" th:href="@{/ventas/nueva}">
+                <!-- SVG: Documento / Más -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Nueva Venta</span>
             </a>
         </div>
         <hr>
 
-        <div class="table-responsive">
-            <table class="table table-striped table-hover border align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th style="width: 8%;">ID</th>
-                        <th>Fecha</th>
-                        <th>Cliente / Razón Social</th>
-                        <th style="text-align: right; width: 15%;">Monto Total</th>
-                        <th style="text-align: center; width: 12%;">Estado</th>
-                        <th style="width: 24%; text-align: center;">Acciones Operativas</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="venta : ${ventas}">
-                        <td th:text="${venta.id}" class="fw-bold text-secondary"></td>
-                        <td th:text="${venta.fecha}"></td>
-                        <td th:text="${venta.cliente.nombre}"></td>
-                        <td th:text="${venta.totalVenta}" class="text-end fw-bold text-dark"></td>
-                        <td class="text-center">
-                            <span th:if="${venta.procesado == 0}" class="badge bg-warning text-dark">Nueva</span>
-                            <span th:if="${venta.procesado == 1}" class="badge bg-success">Procesada</span>
-                        </td>
-                        <td>
-                            <div class="d-flex justify-content-center gap-1">
-                                <a class="btn btn-sm btn-outline-info" th:href="@{/ventas/ver/{id}(id=${venta.id})}">
-                                    Ver
-                                </a>
-                                
-                                <form th:if="${venta.procesado == 0}" 
-                                    th:action="@{/ventas/procesar/{id}(id=${venta.id})}" 
-                                    method="post" 
-                                    style="display: inline;">
-                                    <button type="submit" class="btn btn-sm btn-success">
-                                        Procesar
-                                    </button>
-                                </form>
-                                
-                                <a th:if="${venta.procesado == 1}" 
-                                th:href="@{/ventas/factura/{id}(id=${venta.id})}" 
-                                class="btn btn-sm btn-outline-primary">
-                                    Factura
-                                </a>
+        <!-- Tarjeta del Historial General -->
+        <div class="card border shadow-sm bg-white rounded-3">
+            <div class="card-header bg-light border-bottom text-secondary font-monospace small fw-bold py-2.5">
+                <div class="d-flex align-items-center gap-2">
+                    <!-- SVG: Registro / Listado -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                    <span>Lotes Transaccionales del Periodo</span>
+                </div>
+            </div>
 
-                                <a class="btn btn-sm btn-danger"
-                                   th:if="${venta.procesado == 0}"
-                                   th:href="@{/ventas/eliminar/{id}(id=${venta.id})}">
-                                    Borrar
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(ventas)}">
-                        <td colspan="6" class="text-center text-muted py-3">No existen registros de ventas en el sistema.</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle m-0 border-0">
+                        <thead class="table-light text-secondary font-monospace small border-bottom">
+                            <tr>
+                                <th class="py-3 text-center" style="width: 8%;">ID</th>
+                                <th class="py-3 text-center" style="width: 15%;">Fecha Emisión</th>
+                                <th class="py-3 ps-3">Cliente / Razón Social</th>
+                                <th class="py-3 text-end" style="width: 15%;">Monto Total</th>
+                                <th class="py-3 text-center" style="width: 12%;">Estado</th>
+                                <th class="py-3 text-center" style="width: 20%;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-dark">
+                            <tr th:each="venta : ${ventas}">
+                                <!-- ID Operación -->
+                                <td th:text="${venta.id}" class="text-center font-monospace fw-bold text-secondary"></td>
+                                
+                                <!-- Fecha Formateada -->
+                                <td th:text="${#temporals.format(venta.fecha, 'dd/MM/yyyy HH:mm')}" class="text-center font-monospace text-secondary small"></td>
+                                
+                                <!-- Titular -->
+                                <td th:text="${venta.cliente.nombre}" class="ps-3 fw-medium"></td>
+                                
+                                <!-- Balance Finanzas (Gs.) -->
+                                <td th:text="'Gs. ' + ${#numbers.formatDecimal(venta.totalVenta, 1, 0)}" class="text-end font-monospace fw-bold text-secondary"></td>
+                                
+                                <!-- Estado Dinámico -->
+                                <td class="text-center">
+                                    <span th:if="${venta.procesado == 0}" class="badge bg-warning-subtle text-warning border border-warning-subtle px-2.5 py-1.5 text-uppercase rounded-2" style="font-size: 0.7rem;">Nueva</span>
+                                    <span th:if="${venta.procesado == 1}" class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1.5 text-uppercase rounded-2" style="font-size: 0.7rem;">Procesada</span>
+                                </td>
+                                
+                                <!-- Bloque de Botones Operativos con SVG -->
+                                <td class="text-center">
+                                    <div class="d-flex justify-content-center gap-1.5">
+                                        <!-- Ver Modificaciones Internas -->
+                                        <a class="btn btn-sm btn-outline-secondary p-1.5 rounded-2" th:href="@{/ventas/ver/{id}(id=${venta.id})}" title="Ver detalles internos">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </a>
+                                        
+                                        <!-- Procesar Lote Transaccional -->
+                                        <form th:if="${venta.procesado == 0}" th:action="@{/ventas/procesar/{id}(id=${venta.id})}" method="post" style="display: inline;">
+                                            <button type="submit" class="btn btn-sm btn-outline-success p-1.5 rounded-2" title="Procesar y asentar en caja">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2m-6 9l2 2 4-4" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                        
+                                        <!-- Ver Comprobante / Factura Imprimible -->
+                                        <a th:if="${venta.procesado == 1}" th:href="@{/ventas/factura/{id}(id=${venta.id})}" class="btn btn-sm btn-outline-primary p-1.5 rounded-2" title="Ver Comprobante / Imprimir">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h14z" />
+                                            </svg>
+                                        </a>
+
+                                        <!-- Eliminar Orden Pendiente -->
+                                        <a class="btn btn-sm btn-outline-danger p-1.5 rounded-2" th:if="${venta.procesado == 0}" th:href="@{/ventas/eliminar/{id}(id=${venta.id})}" title="Eliminar borrador">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-16v1a3 3 0 003 3h4m-6-3a3 3 0 01-3-3V3a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- Estado Vacío -->
+                            <tr th:if="${#lists.isEmpty(ventas)}">
+                                <td colspan="6" class="text-center text-muted py-4 small">
+                                    No existen registros de operaciones comerciales asentadas en el sistema.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <div class="mt-3 pt-3 border-top">
-            <a th:href="@{/}" class="btn btn-outline-secondary">
-                Volver al Menú Principal
+        <!-- Retorno Operativo -->
+        <div class="mt-4 pt-3 border-top">
+            <a th:href="@{/}" class="btn btn-outline-secondary d-inline-flex align-items-center gap-2">
+                <!-- SVG: Flecha izquierda -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Volver al Menú Principal</span>
             </a>
         </div>
     </div>
 
-    <div sec:authorize="!hasAnyRole('ADMIN', 'VENDEDOR')" class="alert alert-danger my-4">
-        <strong>Acceso Restringido:</strong> Su cuenta no posee los privilegios requeridos para gestionar el historial de ventas.
+    <!-- SECCIÓN ALTERNATIVA: Mensaje de Seguridad Institucional -->
+    <div sec:authorize="!hasAnyRole('ADMIN', 'VENDEDOR')" class="alert alert-danger border-0 shadow-sm p-4 my-4 rounded-3 d-flex align-items-start gap-3">
+        <!-- SVG: Bloqueo -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" class="mt-0.5 flex-shrink-0">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <div>
+            <h5 class="fw-bold mb-1">Acceso Denegado al Historial Contable</h5>
+            <p class="mb-0 small text-danger-emphasis">Su cuenta no posee las asignaciones del rol comercial correspondientes para auditar el libro de ventas institucional.</p>
+            <a th:href="@{/}" class="btn btn-sm btn-outline-danger mt-3 font-monospace">
+                Regresar a la Zona Segura
+            </a>
+        </div>
     </div>
 
 </body>

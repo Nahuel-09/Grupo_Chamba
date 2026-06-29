@@ -9,7 +9,7 @@
 
     <div id="formulario_categoria">
         <div class="mb-3">
-            <h3 th:text="${title}">Gestión de Categoría</h3>
+            <h3 th:text="${title}">Gestión de Categorías</h3>
             <p class="text-muted small mb-0">Ingrese los datos para la clasificación del inventario.</p>
         </div>
         <hr>
@@ -33,10 +33,10 @@
 
             <div class="d-flex gap-2">
                 <button class="btn btn-success px-4" type="submit">
-                    Enviar Datos
+                    <span th:text="${modoedicion} ? 'Actualizar Categoría' : 'Guardar Categoría'">Guardar Categoría</span>
                 </button>
                 
-                <a class="btn btn-outline-danger" th:href="@{/categorias/}">
+                <a class="btn btn-outline-danger" th:href="@{/categorias}">
                     Cancelar
                 </a>
 

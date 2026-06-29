@@ -9,8 +9,8 @@
 
     <div id="formulario_notas">
         <div class="mb-3">
-            <h3 th:text="${title}">Nueva Nota de Envío</h3>
-            <p class="text-muted small mb-0">Formulario transaccional para el ingreso y carga de stock al inventario.</p>
+            <h3 class="fw-bold text-dark" th:text="${title}">Nueva Nota de Envío</h3>
+            <p class="text-muted small mb-0">Formulario transaccional para el ingreso, control y carga de stock al inventario.</p>
         </div>
         <hr>
 
@@ -20,31 +20,36 @@
 
         <form method="post">
 
-            <div class="card shadow-sm mb-3">
-                <div class="card-header bg-light fw-bold text-secondary">
-                    Cabecera de la Nota
+            <div class="card border shadow-sm mb-4 bg-white rounded-3">
+                <div class="card-header bg-light border-bottom text-secondary font-monospace small fw-bold py-2.5">
+                    <div class="d-flex align-items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Cabecera de la Nota de Envío</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row g-3 mb-3">
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Fecha *</label>
-                            <input type="date" name="fecha" class="form-control" th:value="${nota.fecha}" required>
+                            <label class="form-label fw-bold small text-secondary">Fecha de Emisión *</label>
+                            <input type="date" name="fecha" class="form-control text-dark font-monospace" th:value="${nota.fecha}" required>
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Nro. Comprobante</label>
-                            <input type="number" name="nro" class="form-control" th:value="${nota.nro}" placeholder="Ej. 00214">
+                            <label class="form-label fw-bold small text-secondary">Nro. Comprobante</label>
+                            <input type="number" name="nro" class="form-control font-monospace" th:value="${nota.nro}" placeholder="Ej. 00214">
                         </div>
 
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Proveedor / Distribuidor *</label>
-                            <input type="text" name="proveedor" class="form-control" th:value="${nota.proveedor}" placeholder="Nombre del proveedor" required>
+                            <label class="form-label fw-bold small text-secondary">Proveedor / Distribuidor *</label>
+                            <input type="text" name="proveedor" class="form-control" th:value="${nota.proveedor}" placeholder="Nombre del proveedor o laboratorio" required>
                         </div>
                     </div>
 
                     <div class="mb-1">
-                        <label class="form-label fw-bold">Observación interna</label>
-                        <textarea name="observacion" class="form-control" rows="2" th:text="${nota.observacion}" placeholder="Notas sobre el estado de la carga..."></textarea>
+                        <label class="form-label fw-bold small text-secondary">Observación interna</label>
+                        <textarea name="observacion" class="form-control text-dark" rows="2" th:text="${nota.observacion}" placeholder="Notas sobre el estado de la carga, lote o condiciones de entrega..."></textarea>
                     </div>
 
                     <input type="hidden" name="verificado" th:value="${nota.verificado}">
@@ -52,15 +57,20 @@
                 </div>
             </div>
 
-            <div class="card shadow-sm mb-3">
-                <div class="card-header bg-light fw-bold text-success">
-                    Agregar Producto al Detalle
+            <div class="card border shadow-sm mb-4 bg-white rounded-3">
+                <div class="card-header bg-light border-bottom text-success font-monospace small fw-bold py-2.5">
+                    <div class="d-flex align-items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Agregar Producto al Detalle</span>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <div class="row g-3">
+                    <div class="row g-3 align-items-end">
                         <div class="col-md-5">
-                            <label class="form-label fw-bold">Producto *</label>
-                            <select name="productoId" class="form-select">
+                            <label class="form-label fw-bold small text-secondary">Producto *</label>
+                            <select name="productoId" class="form-select text-dark">
                                 <option value="">Seleccione un producto...</option>
                                 <option th:each="producto : ${productos}"
                                         th:value="${producto.id}"
@@ -70,18 +80,21 @@
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Cantidad *</label>
-                            <input type="number" name="cantidad" class="form-control" min="1" placeholder="0">
+                            <label class="form-label fw-bold small text-secondary">Cantidad *</label>
+                            <input type="number" name="cantidad" class="form-control font-monospace" min="1" placeholder="0">
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Precio Unitario *</label>
-                            <input type="number" name="precio" class="form-control" step="0.01" min="1" placeholder="0.00">
+                            <label class="form-label fw-bold small text-secondary">Precio Unitario *</label>
+                            <input type="number" name="precio" class="form-control font-monospace" step="0.01" min="1" placeholder="0.00">
                         </div>
 
-                        <div class="col-md-1 d-flex align-items-end">
-                            <button type="submit" class="btn btn-success w-200 fw-bold" th:formaction="@{/notas/detalle/agregar}" title="Añadir ítem">
-                                Añadir
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-outline-success w-100 d-inline-flex align-items-center justify-content-center p-2 rounded-2" 
+                                    th:formaction="@{/notas/detalle/agregar}" title="Añadir ítem al detalle operativo">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                </svg>
                             </button>
                         </div>
                     </div>
@@ -93,16 +106,25 @@
             </div>
 
             <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary px-4" th:formaction="@{/notas/guardar}">
-                    Guardar Nota de Envío
+                <button type="submit" class="btn btn-success px-4 d-inline-flex align-items-center gap-2" th:formaction="@{/notas/guardar}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                    </svg>
+                    <span>Guardar Nota de Envío</span>
                 </button>
 
-                <a class="btn btn-outline-danger" th:href="@{/notas}">
-                    Cancelar
+                <a class="btn btn-outline-danger d-inline-flex align-items-center gap-2" th:href="@{/notas}">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span>Cancelar</span>
                 </a>
 
-                <a th:href="@{/}" class="btn btn-outline-secondary ms-auto">
-                    Menú Principal
+                <a th:href="@{/}" class="btn btn-outline-secondary ms-auto d-inline-flex align-items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span>Menú Principal</span>
                 </a>
             </div>
 
